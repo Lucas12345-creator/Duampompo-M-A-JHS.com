@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DUAMPOMPO M/A J.H.S — Cradle for Excellence</title>
+  <meta name="description" content="DUAMPOMPO M/A J.H.S — School site with student records and admin dashboard (single-file HTML/CSS/JS)">
+  <style>
+    /* ====== Basic Reset & Typography ====== */
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;color:#0f172a;background:#f8fafc}
+    a{color:inherit;text-decoration:none}
+    img{max-width:100%;height:auto;display:block}
+
+    /* ====== Layout ====== */
+    header{background:#0f172a;color:#fff;padding:18px 20px;display:flex;align-items:center;justify-content:space-between}
+    .brand{display:flex;align-items:center;gap:14px}
+    .logo{width:56px;height:56px;border-radius:8px;background:linear-gradient(135deg,#2563eb,#06b6d4);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff}
+    nav a{margin-left:14px;padding:8px 10px;border-radius:8px}
+    nav a:hover{background:#11182722}
+
+    .container{max-width:1100px;margin:28px auto;padding:0 18px}
+    .hero{display:grid;grid-template-columns:1fr 420px;gap:24px;align-items:center}
+    .card{background:#fff;border-radius:14px;padding:18px;box-shadow:0 6px 18px rgba(2,6,23,0.06)}
+
+    h1{font-size:26px;color:#0b1220}
+    p.lead{color:#475569;margin-top:8px}
+
+    /* Quick links */
+    .quick{display:flex;gap:12px;margin-top:14px}
+    .btn{background:#2563eb;color:#fff;padding:10px 12px;border-radius:10px;cursor:pointer;border:none}
+    .btn.secondary{background:#e6eefc;color:#0b1220}
+
+    /* Grid sections */
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:20px}
+    .events-list li{padding:10px 8px;border-radius:8px}
+
+    /* Gallery */
+    .gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+
+    /* Responsive */
+    @media(max-width:960px){.hero{grid-template-columns:1fr;}.gallery-grid{grid-template-columns:repeat(2,1fr)}.grid-3{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:520px){.grid-3{grid-template-columns:1fr}.gallery-grid{grid-template-columns:1fr}}
+
+    /* Footer */
+    footer{margin-top:28px;padding:20px;background:transparent;color:#475569;text-align:center}
+
+    /* ====== Student Portal & Admin Modal Styles ====== */
+    .modal{position:fixed;inset:0;background:rgba(2,6,23,0.5);display:flex;align-items:center;justify-content:center;padding:20px;z-index:60}
+    .modal .card{width:100%;max-width:820px}
+    .form-row{display:flex;gap:8px;margin-top:10px}
+    .form-row input,textarea,select{flex:1;padding:10px;border-radius:8px;border:1px solid #e6eefc}
+    .small{font-size:13px;color:#64748b}
+
+    /* ====== Admin Dashboard Layout ====== */
+    .admin-layout{display:grid;grid-template-columns:260px 1fr;gap:20px}
+    .sidebar{background:#fff;border-radius:12px;padding:14px;height:calc(100vh - 64px);overflow:auto}
+    .sidebar h3{font-size:15px;margin-bottom:12px}
+    .side-link{display:block;padding:10px;border-radius:8px;margin-bottom:8px;color:#0b1220}
+    .side-link.active{background:#eef2ff}
+    .admin-main{padding:18px}
+    table{width:100%;border-collapse:collapse;margin-top:12px}
+    th,td{padding:10px;border-bottom:1px solid #f1f5f9;text-align:left}
+    .action-btn{padding:6px 8px;border-radius:8px;border:none;cursor:pointer}
+    .edit{background:#fef3c7}
+    .del{background:#fee2e2}
+
+    /* tiny helpers */
+    .muted{color:#64748b;font-size:13px}
+    .stat-grid{display:flex;gap:12px}
+    .stat{background:#fff;padding:12px;border-radius:12px;flex:1}
+
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="logo">DM</div>
+      <div>
+        <div style="font-weight:700">DUAMPOMPO M/A J.H.S</div>
+        <div class="muted" style="font-size:13px">Cradle for Excellence</div>
+      </div>
+    </div>
+
+    <nav>
+      <a href="#home">Home</a>
+      <a href="#about">About</a>
+      <a href="#academics">Academics</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#contact">Contact</a>
+      <button class="btn" id="studentPortalBtn">Student Portal</button>
+      <button class="btn secondary" id="adminLoginBtn">Admin Login</button>
+    </nav>
+  </header>
+
+  <main class="container" id="app">
+
+    <!-- HOME -->
+    <section id="home" class="hero">
+      <div>
+        <div class="card">
+          <h1>Welcome to DUAMPOMPO M/A J.H.S</h1>
+          <p class="lead">A modern, responsive school website demo. Manage student records, results and announcements from a simple admin dashboard.</p>
+
+          <div class="quick">
+            <button class="btn" id="quickLogin">Student Login</button>
+            <button class="btn secondary" id="quickResults">Check Results</button>
+            <a href="#news" class="btn secondary">Announcements</a>
+          </div>
+
+          <div class="grid-3">
+            <div class="card">
+              <h3 style="margin-bottom:8px">Latest News</h3>
+              <ul id="newsList" class="events-list muted"></ul>
+            </div>
+
+            <div class="card">
+              <h3 style="margin-bottom:8px">Upcoming Events</h3>
+              <ul id="eventsList" class="events-list muted"></ul>
+            </div>
+
+            <div class="card">
+              <h3 style="margin-bottom:8px">Quick Stats</h3>
+              <div class="stat-grid">
+                <div class="stat"><div style="font-weight:700" id="statStudents">0</div><div class="muted">Students</div></div>
+                <div class="stat"><div style="font-weight:700" id="statTeachers">0</div><div class="muted">Teachers</div></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="card" style="margin-top:16px">
+          <h3>About our school</h3>
+          <p class="muted">DUAMPOMPO M/A J.H.S is committed to academic excellence and holistic development. We provide a safe, nurturing environment for learners.</p>
+        </div>
+
+      </div>
+
+      <aside>
+        <div class="card">
+          <h3>Photo Preview</h3>
+          <div class="gallery-grid" id="previewGallery">
+            <!-- images inserted by JS -->
+          </div>
+          <div style="margin-top:12px;text-align:center" class="muted">Want more? Use the admin dashboard to upload images.</div>
+        </div>
+      </aside>
+    </section>
+
+    <!-- About (anchor) -->
+    <section id="about" style="margin-top:20px">
+      <div class="card">
+        <h2>Our Mission & Vision</h2>
+        <p class="muted" style="margin-top:8px">Mission: To nurture learners into responsible, disciplined, and academically excellent citizens. Vision: A community transformed by quality education.</p>
+      </div>
+    </section>
+
+    <!-- Academics -->
+    <section id="academics" style="margin-top:20px">
+      <div class="card">
+        <h2>Academics</h2>
+        <p class="muted">Subjects: Mathematics, Science, English, Social Studies, ICT. Each subject has dedicated teachers and resources.</p>
+      </div>
+    </section>
+
+    <!-- Gallery -->
+    <section id="gallery" style="margin-top:20px">
+      <div class="card">
+        <h2>Gallery</h2>
+        <div class="gallery-grid" id="galleryGrid"></div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" style="margin-top:20px">
+      <div class="card">
+        <h2>Contact</h2>
+        <p class="muted">Phone: +233 000 000 000 | Email: info@duampompo.edu.gh</p>
+        <form id="contactForm" style="margin-top:12px">
+          <div class="form-row"><input placeholder="Your name" required id="cname"><input placeholder="Your email" required id="cemail"></div>
+          <textarea placeholder="Message" id="cmsg" style="margin-top:8px;padding:10px;border-radius:8px;border:1px solid #e6eefc;width:100%"></textarea>
+          <div style="margin-top:8px"><button class="btn" type="submit">Send Message</button></div>
+        </form>
+      </div>
+    </section>
+
+    <footer>
+      <div class="muted">© DUAMPOMPO M/A J.H.S — Cradle for Excellence</div>
+    </footer>
+
+  </main>
+
+  <!-- ===== Modals & Admin area (rendered with JS) ===== -->
+  <div id="modalRoot"></div>
+  <div id="adminRoot" style="display:none"></div>
+
+  <script>
+    /* ======= Sample data (persistent via localStorage) ======= */
+    const sample = {
+      students: [
+        {id:'S001',name:'Kwame Boateng',class:'JHS1',dob:'2012-06-12',attendance:92,results:{Math:78,English:82,Science:69}},
+        {id:'S002',name:'Akua Mensah',class:'JHS2',dob:'2011-03-04',attendance:88,results:{Math:91,English:85,Science:80}}
+      ],
+      teachers: [
+        {id:'T001',name:'Mr. K. Owusu',subject:'Mathematics'},
+        {id:'T002',name:'Mrs. E. Asante',subject:'English'}
+      ],
+      news: [
+        {id:1,title:'School Reopens — Term 1',date:'2025-09-01'},
+        {id:2,title:'Inter-School Sports Day',date:'2025-10-10'}
+      ],
+      events: [
+        {id:1,when:'2025-11-05',title:'Parent-Teacher Meeting'},
+        {id:2,when:'2025-12-15',title:'Graduation Day'}
+      ],
+      gallery: []
+    };
+
+    function loadData(){
+      const raw = localStorage.getItem('dm_school_v1');
+      if(raw) return JSON.parse(raw);
+      localStorage.setItem('dm_school_v1', JSON.stringify(sample));
+      return sample;
+    }
+    function saveData(d){ localStorage.setItem('dm_school_v1', JSON.stringify(d)); }
+    let DB = loadData();
+
+    // render helpers
+    function renderStats(){document.getElementById('statStudents').textContent = DB.students.length; document.getElementById('statTeachers').textContent = DB.teachers.length}
+    function renderNews(){const ul=document.getElementById('newsList');ul.innerHTML='';DB.news.forEach(n=>{const li=document.createElement('li');li.innerHTML=`<strong>${n.title}</strong><div class="muted">${n.date}</div>`;ul.appendChild(li)})}
+    function renderEvents(){const ul=document.getElementById('eventsList');ul.innerHTML='';DB.events.forEach(e=>{const li=document.createElement('li');li.innerHTML=`<strong>${e.title}</strong><div class="muted">${e.when}</div>`;ul.appendChild(li)})}
+    function renderGallery(){const grid=document.getElementById('galleryGrid');grid.innerHTML='';DB.gallery.forEach((g,idx)=>{const d=document.createElement('div');d.innerHTML=`<img src='${g}' alt='img-${idx}' style='border-radius:8px;height:110px;object-fit:cover'/>`;grid.appendChild(d)})
+      const preview=document.getElementById('previewGallery');preview.innerHTML='';DB.gallery.slice(0,4).forEach(g=>{const d=document.createElement('div');d.innerHTML=`<img src='${g}' alt='preview' style='height:80px;border-radius:8px;object-fit:cover'/>`;preview.appendChild(d)})}
+
+    // initial render
+    renderStats(); renderNews(); renderEvents(); renderGallery();
+
+    /* ======= Student Portal ======= */
+    function openStudentPortal(){
+      const modal = document.createElement('div'); modal.className='modal';
+      modal.innerHTML = `
+        <div class="card">
+          <h3>Student Portal Login</h3>
+          <p class="small">Enter student ID to continue (example: S001)</p>
+          <div class="form-row" style="margin-top:10px"><input id="stid" placeholder="Student ID"/><button class="btn" id="stLogin">Login</button></div>
+          <div style="margin-top:8px" class="muted">Or try the sample IDs: S001, S002</div>
+        </div>
+      `;
+      modal.addEventListener('click',e=>{ if(e.target===modal) modal.remove() });
+      document.getElementById('modalRoot').appendChild(modal);
+      document.getElementById('stLogin').onclick = ()=>{
+        const id=document.getElementById('stid').value.trim();
+        const s = DB.students.find(x=>x.id===id);
+        if(!s){alert('Student not found');return}
+        modal.remove(); openStudentDashboard(s);
+      }
+    }
+    function openStudentDashboard(student){
+      const modal = document.createElement('div'); modal.className='modal';
+      modal.innerHTML = `
+        <div class="card">
+          <h3>Student Dashboard — ${student.name}</h3>
+          <p class="muted">Class: ${student.class} | Attendance: ${student.attendance}%</p>
+          <div style="margin-top:12px">
+            <h4>Results</h4>
+            <div id="resultsList"></div>
+          </div>
+          <div style="margin-top:12px"><button class="btn" id="closeStu">Close</button></div>
+        </div>
+      `;
+      document.getElementById('modalRoot').appendChild(modal);
+      const rl = document.getElementById('resultsList'); rl.innerHTML=''; for(const [sub,score] of Object.entries(student.results||{})){const p=document.createElement('div');p.innerHTML=`${sub}: <strong>${score}</strong>`;rl.appendChild(p)}
+      document.getElementById('closeStu').onclick = ()=> modal.remove();
+    }
+
+    /* ======= Admin Login & Dashboard (single-file) ======= */
+    const ADMIN_PASS = 'admin123';
+    function openAdminLogin(){
+      const modal = document.createElement('div'); modal.className='modal';
+      modal.innerHTML = `
+        <div class="card">
+          <h3>Admin Login</h3>
+          <div class="form-row" style="margin-top:10px"><input id="adminUser" placeholder="username" value="admin"/><input id="adminPass" placeholder="password" type="password"/></div>
+          <div style="margin-top:10px"><button class="btn" id="adminEnter">Enter Dashboard</button></div>
+          <div class="muted" style="margin-top:8px">Default password: <strong>admin123</strong> (change in code)</div>
+        </div>
+      `;
+      modal.addEventListener('click',e=>{ if(e.target===modal) modal.remove() });
+      document.getElementById('modalRoot').appendChild(modal);
+      document.getElementById('adminEnter').onclick = ()=>{
+        const p=document.getElementById('adminPass').value;
+        if(p===ADMIN_PASS){ modal.remove(); showAdminPanel(); } else { alert('Wrong password') }
+      }
+    }
+
+    function showAdminPanel(){
+      const root = document.getElementById('adminRoot'); root.style.display='block';
+      root.innerHTML = `
+        <div style="position:fixed;inset:64px 18px 18px 18px;background:transparent;z-index:70">
+          <div class="admin-layout">
+            <aside class="sidebar card">
+              <h3>Admin Dashboard</h3>
+              <a href="#" class="side-link active" data-section="overview">Overview</a>
+              <a href="#" class="side-link" data-section="students">Students</a>
+              <a href="#" class="side-link" data-section="teachers">Teachers</a>
+              <a href="#" class="side-link" data-section="news">Announcements</a>
+              <a href="#" class="side-link" data-section="gallery">Gallery</a>
+              <a href="#" class="side-link" data-section="settings">Settings</a>
+              <div style="margin-top:14px"><button class="btn" id="closeAdmin">Close Dashboard</button></div>
+            </aside>
+            <main class="card admin-main" id="adminMain">
+              <!-- dynamic -->
+            </main>
+          </div>
+        </div>
+      `;
+
+      // sidebar link handlers
+      root.querySelectorAll('.side-link').forEach(a=>a.onclick=(ev)=>{ev.preventDefault(); root.querySelectorAll('.side-link').forEach(x=>x.classList.remove('active')); a.classList.add('active'); renderAdminSection(a.dataset.section)} );
+      document.getElementById('closeAdmin').onclick = ()=>{ root.style.display='none'; }
+      renderAdminSection('overview');
+    }
+
+    function renderAdminSection(which){
+      const main = document.getElementById('adminMain');
+      if(which==='overview'){
+        main.innerHTML = `
+          <h2>Overview</h2>
+          <div class="stat-grid" style="margin-top:12px">
+            <div class="stat"><div style="font-weight:700">${DB.students.length}</div><div class="muted">Students</div></div>
+            <div class="stat"><div style="font-weight:700">${DB.teachers.length}</div><div class="muted">Teachers</div></div>
+            <div class="stat"><div style="font-weight:700">${DB.news.length}</div><div class="muted">Announcements</div></div>
+          </div>
+        `;
+      }
+      if(which==='students'){
+        main.innerHTML = `
+          <h2>Students</h2>
+          <div style="margin-top:12px"><button class="btn" id="addStudentBtn">Add Student</button></div>
+          <table>
+            <thead><tr><th>ID</th><th>Name</th><th>Class</th><th>Attendance</th><th>Actions</th></tr></thead>
+            <tbody id="studentsTable"></tbody>
+          </table>
+        `;
+        const tbody = document.getElementById('studentsTable'); tbody.innerHTML=''; DB.students.forEach(s=>{const tr=document.createElement('tr');tr.innerHTML=`<td>${s.id}</td><td>${s.name}</td><td>${s.class}</td><td>${s.attendance}%</td><td><button class='action-btn edit' data-id='${s.id}'>Edit</button> <button class='action-btn del' data-id='${s.id}'>Delete</button></td>`;tbody.appendChild(tr)});
+        document.getElementById('addStudentBtn').onclick = ()=> openStudentForm();
+        tbody.querySelectorAll('.edit').forEach(b=>b.onclick=(e)=>{ const id=b.dataset.id; const st=DB.students.find(x=>x.id===id); openStudentForm(st); });
+        tbody.querySelectorAll('.del').forEach(b=>b.onclick=(e)=>{ if(confirm('Delete student?')){ DB.students = DB.students.filter(x=>x.id!==b.dataset.id); saveData(DB); renderAdminSection('students'); renderStats(); } });
+      }
+      if(which==='teachers'){
+        main.innerHTML = `
+          <h2>Teachers</h2>
+          <table><thead><tr><th>ID</th><th>Name</th><th>Subject</th></tr></thead><tbody id='teachersT'></tbody></table>
+        `; const t=document.getElementById('teachersT'); t.innerHTML=''; DB.teachers.forEach(tt=>{const tr=document.createElement('tr');tr.innerHTML=`<td>${tt.id}</td><td>${tt.name}</td><td>${tt.subject}</td>`;t.appendChild(tr)});
+      }
+      if(which==='news'){
+        main.innerHTML = `
+          <h2>Announcements</h2>
+          <div style="margin-top:12px"><button class="btn" id="addNewsBtn">Add Announcement</button></div>
+          <table><thead><tr><th>Title</th><th>Date</th><th>Actions</th></tr></thead><tbody id='newsT'></tbody></table>
+        `; const nt=document.getElementById('newsT'); nt.innerHTML=''; DB.news.forEach(n=>{const tr=document.createElement('tr');tr.innerHTML=`<td>${n.title}</td><td>${n.date}</td><td><button class='action-btn del' data-id='${n.id}'>Delete</button></td>`;nt.appendChild(tr)});
+        document.getElementById('addNewsBtn').onclick = ()=> openNewsForm();
+        nt.querySelectorAll('.del').forEach(b=>b.onclick=()=>{ if(confirm('Delete announcement?')){ DB.news = DB.news.filter(x=>x.id!=b.dataset.id); saveData(DB); renderAdminSection('news'); renderNews(); } });
+      }
+      if(which==='gallery'){
+        main.innerHTML = `
+          <h2>Gallery</h2>
+          <p class="muted">Upload images to show on the public gallery (images are saved in browser storage as base64).</p>
+          <div style="margin-top:8px"><input type='file' id='imgUpload' accept='image/*'/> <button class='btn' id='uploadImg'>Upload</button></div>
+          <div style='margin-top:12px' id='adminGalleryGrid' class='gallery-grid'></div>
+        `; document.getElementById('uploadImg').onclick = ()=>{ const f=document.getElementById('imgUpload').files[0]; if(!f){alert('Choose a file');return} const r=new FileReader(); r.onload=()=>{ DB.gallery.unshift(r.result); saveData(DB); renderAdminSection('gallery'); renderGallery(); }; r.readAsDataURL(f); }
+        const ag=document.getElementById('adminGalleryGrid'); ag.innerHTML=''; DB.gallery.forEach((g,i)=>{const cell=document.createElement('div');cell.innerHTML=`<img src='${g}' style='height:100px;border-radius:8px;object-fit:cover'/><div style='margin-top:4px'><button class='btn' data-i='${i}' style='background:#fee2e2'>Delete</button></div>`;ag.appendChild(cell)}); ag.querySelectorAll('button').forEach(b=>b.onclick=(e)=>{ if(confirm('Delete image?')){DB.gallery.splice(b.dataset.i,1); saveData(DB); renderAdminSection('gallery'); renderGallery();}});
+      }
+      if(which==='settings'){
+        main.innerHTML = `
+          <h2>Settings</h2>
+          <p class='muted'>Site settings (simple demo). You can clear all stored data below.</p>
+          <div style='margin-top:12px'><button class='btn' id='clearDB' style='background:#ef4444'>Clear all data</button></div>
+        `; document.getElementById('clearDB').onclick = ()=>{ if(confirm('Clear all saved data and reset to sample?')){ localStorage.removeItem('dm_school_v1'); DB = loadData(); renderAdminSection('overview'); renderStats(); renderNews(); renderEvents(); renderGallery(); alert('Reset complete') } };
+      }
+    }
+
+    function openStudentForm(student){
+      const modal = document.createElement('div'); modal.className='modal';
+      const isEdit = !!student;
+      modal.innerHTML = `
+        <div class='card'>
+          <h3>${isEdit?'Edit':'Add'} Student</h3>
+          <div class='form-row' style='margin-top:10px'><input id='sId' placeholder='ID (e.g. S003)' value='${student?student.id:''}' ${isEdit?'readonly':''}></div>
+          <div class='form-row' style='margin-top:8px'><input id='sName' placeholder='Full name' value='${student?student.name:''}'><input id='sClass' placeholder='Class' value='${student?student.class:''}'></div>
+          <div class='form-row' style='margin-top:8px'><input id='sDob' placeholder='Date of birth' value='${student?student.dob:''}'><input id='sAttend' placeholder='Attendance %' value='${student?student.attendance:''}'></div>
+          <div style='margin-top:10px'><button class='btn' id='saveStu'>Save</button> <button class='btn secondary' id='cancelStu'>Cancel</button></div>
+        </div>
+      `;
+      modal.addEventListener('click',e=>{ if(e.target===modal) modal.remove() });
+      document.getElementById('modalRoot').appendChild(modal);
+      document.getElementById('cancelStu').onclick = ()=> modal.remove();
+      document.getElementById('saveStu').onclick = ()=>{
+        const id=document.getElementById('sId').value.trim(); const name=document.getElementById('sName').value.trim(); const cls=document.getElementById('sClass').value.trim(); const dob=document.getElementById('sDob').value.trim(); const att=parseInt(document.getElementById('sAttend').value)||0;
+        if(!id||!name){alert('Provide ID and name');return}
+        if(isEdit){ const idx=DB.students.findIndex(x=>x.id===id); DB.students[idx].name=name; DB.students[idx].class=cls; DB.students[idx].dob=dob; DB.students[idx].attendance=att; }
+        else{ if(DB.students.find(x=>x.id===id)){alert('ID exists');return} DB.students.push({id,name,class:cls,dob,attendance:att,results:{}}) }
+        saveData(DB); modal.remove(); renderAdminSection('students'); renderStats();
+      }
+    }
+
+    function openNewsForm(){
+      const modal = document.createElement('div'); modal.className='modal';
+      modal.innerHTML = `
+        <div class='card'><h3>Add Announcement</h3>
+          <div class='form-row' style='margin-top:8px'><input id='nTitle' placeholder='Title'></div>
+          <div style='margin-top:8px'><input id='nDate' placeholder='YYYY-MM-DD'></div>
+          <div style='margin-top:8px'><button class='btn' id='saveN'>Save</button> <button class='btn secondary' id='cancelN'>Cancel</button></div>
+        </div>
+      `; document.getElementById('modalRoot').appendChild(modal);
+      document.getElementById('cancelN').onclick = ()=> modal.remove();
+      document.getElementById('saveN').onclick = ()=>{ const t=document.getElementById('nTitle').value.trim(); const d=document.getElementById('nDate').value.trim(); if(!t||!d){alert('provide title and date');return} DB.news.unshift({id:Date.now(),title:t,date:d}); saveData(DB); modal.remove(); renderAdminSection('news'); renderNews(); }
+    }
+
+    /* ===== Events: wire buttons ===== */
+    document.getElementById('studentPortalBtn').onclick = openStudentPortal;
+    document.getElementById('quickLogin').onclick = openStudentPortal;
+    document.getElementById('adminLoginBtn').onclick = openAdminLogin;
+    document.getElementById('quickResults').onclick = ()=>{
+      const r = prompt('Enter student ID (e.g. S001)'); if(!r) return; const s=DB.students.find(x=>x.id===r.trim()); if(!s) return alert('Student not found'); openStudentDashboard(s);
+    }
+    document.getElementById('contactForm').onsubmit = (e)=>{ e.preventDefault(); alert('Message sent (demo)'); document.getElementById('contactForm').reset(); }
+
+    // small keyboard shortcut: press A to open admin login
+    document.addEventListener('keydown',e=>{ if(e.key.toLowerCase()==='a') openAdminLogin(); })
+
+    // small safety: ensure DB saved on unload
+    window.addEventListener('beforeunload',()=>saveData(DB));
+
+  </script>
+</body>
+</html>
